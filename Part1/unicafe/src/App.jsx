@@ -1,37 +1,22 @@
 import { useState } from "react"
 
+// Headers
 const Head1 = props => <h1>{props.text}</h1>
 const Head2 = props => <h2>{props.text}</h2>
 
-const Button = (props) => {
-  return (
-    <>
-      <button onClick={props.handleClick}>{props.text}</button>
-    </>
-  )
-}
+// Buttons
+const Button = props => <button onClick={props.handleClick}>{props.text}</button>
 
-const Statistics = (props) => {
-  return (
-    <div>    
-      {props.text} {props.value}
-    </div>
-  )
-}
+// Statistics
+const Statistics = props => <div>{props.text} {props.value}</div>
 
 // Sum, Average & Positive Feedback
 const SumAvgePfd = (props) => {
   return (
     <>
-      <div>
-        all {props.sum}
-      </div>
-      <div>
-        average { ( isNaN(props.average) ) ? 0 : props.average }
-      </div>
-      <div>
-        positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %
-      </div>
+      <div>all {props.sum}</div>
+      <div>average { ( isNaN(props.average) ) ? 0 : props.average }</div>
+      <div>positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %</div>
     </>
   )
 }
