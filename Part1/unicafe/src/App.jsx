@@ -19,22 +19,33 @@ const Statistics = (props) => {
   )
 }
 
+// Sum, Average & Positive Feedback
+const SumAvgePfd = (props) => {
+  return (
+    <>
+      <div>
+        all {props.sum}
+      </div>
+      <div>
+        average { ( isNaN(props.average) ) ? 0 : props.average }
+      </div>
+      <div>
+        positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %
+      </div>
+    </>
+  )
+}
+
 const App = () => {
   const [good, setGood] = useState(0)
   const [neutral, setNeutral] = useState(0)
   const [bad, setBad] = useState(0)
 
-  const mySetGood = () => {
-    setGood(good + 1)
-  }
+  const mySetGood = () => setGood(good + 1)
+  const mySetNeutral = () => setNeutral(neutral + 1)
+  const mySetBad = () => setBad(bad + 1)
 
-  const mySetNeutral = () => {
-    setNeutral(neutral + 1)
-  }
-
-  const mySetBad = () => {
-    setBad(bad + 1)
-  }
+  const allFeedbackSum = (good + neutral + bad)
 
   return (
     <div>
@@ -45,7 +56,8 @@ const App = () => {
       <Head2 text='statistics' />
       <Statistics text='good' value={good} />
       <Statistics text='neutral' value={neutral} />
-      <Statistics text='bad' value={bad} />
+      <Statistics text='bad' value={bad} />  
+      <SumAvgePfd sum={allFeedbackSum} average={(good - bad) / allFeedbackSum} positiveFeedback={(good / allFeedbackSum) * 100} />
     </div>
   )
 }
