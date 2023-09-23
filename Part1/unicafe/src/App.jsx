@@ -4,6 +4,7 @@ import { useState } from "react"
 const Head1 = props => <h1>{props.text}</h1>
 const Head2 = props => <h2>{props.text}</h2>
 
+// feedback buttons
 const FeedbackButton = (props) => {
   return (
     <>
@@ -14,52 +15,106 @@ const FeedbackButton = (props) => {
 
 // Buttons
 const Buttons = (props) => {
+  const { sets, feedbacks } = props
   return (
     <>
-      <FeedbackButton handleClick={props.sets[0]} text={props.feedbacks[0]}/>
-      <FeedbackButton handleClick={props.sets[1]} text={props.feedbacks[1]}/>
-      <FeedbackButton handleClick={props.sets[2]} text={props.feedbacks[2]}/>
+      <FeedbackButton handleClick={sets[0]} text={feedbacks[0]}/>
+      <FeedbackButton handleClick={sets[1]} text={feedbacks[1]}/>
+      <FeedbackButton handleClick={sets[2]} text={feedbacks[2]}/>
     </>
   )
 }
 
-const StatisticLine = (props) => {
+// Sum
+const Sum = (props) => {
   return (
-    <div>
-      {props.text} {props.value}
-    </div>
+    <tr>
+      <td>all</td>
+      <td>{props.sum}</td>
+    </tr>
   )
 }
 
-// Statistics
-const Statistics = (props) => {
+// Average
+const Average = (props) => {
   return (
-    <>
-      <StatisticLine text={props.feedbacks[0]} value={props.feedbacksValues[0]} />
-      <StatisticLine text={props.feedbacks[1]} value={props.feedbacksValues[1]} />
-      <StatisticLine text={props.feedbacks[2]} value={props.feedbacksValues[2]} />
-    </>
+    <tr>
+      <td>average</td>
+      <td>{ ( isNaN(props.average) ) ? 0 : props.average }</td>
+    </tr>
+  )
+}
+
+// Positive Feedback
+const PositiveFeedback = (props) => {
+  return (
+    <tr>
+      <td>positive</td>
+      <td>{ ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %</td>
+    </tr>
+  )
+}
+
+// no feedback
+const NoFeedback = (props) => {
+  return (
+    <tr>
+      <td>{props.nofeedback}</td>
+    </tr>
   )
 }
 
 // Sum, Average & Positive Feedback
 const SumAvgePfd = (props) => {
-  if (props.sum > 0 ) {
+  const { sum, average, positiveFeedback, nofeedback } = props
+
+  if (sum > 0 ) {
     return (
       <>
-        <div>all {props.sum}</div>
-        <div>average { ( isNaN(props.average) ) ? 0 : props.average }</div>
-        <div>positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %</div>
+        <Sum sum={sum} />
+        <Average average={average} />
+        <PositiveFeedback positiveFeedback={positiveFeedback} />  
       </>
     )
   } else {
     return (
       <>
-        <div>{props.nofeedback}</div>
+        <NoFeedback nofeedback={nofeedback} />
       </>
     )
   }
 }
+
+// Statistics
+const StatisticLine = (props) => {
+  return (
+    <tr>
+      <td>{props.text}</td>
+      <td>{props.value}</td>
+    </tr>
+  )
+}
+
+// Statistics
+const Statistics = (props) => {
+  const { allFeedbacksSum, average, positiveFeedback, nofeedback } = props.transactions
+  const { feedbacks } = props
+  const { feedbacksValues } = props
+
+  return (
+    <table>
+      <tbody>
+        <StatisticLine text={feedbacks[0]} value={feedbacksValues[0]} />
+        <StatisticLine text={feedbacks[1]} value={feedbacksValues[1]} />
+        <StatisticLine text={feedbacks[2]} value={feedbacksValues[2]} />
+      </tbody>
+      <tfoot>
+        <SumAvgePfd sum={allFeedbacksSum} average={average} positiveFeedback={positiveFeedback} nofeedback={nofeedback} />
+      </tfoot>
+    </table>
+  )
+}
+
 
 const App = () => {
   const [good, setGood] = useState(0)
@@ -70,23 +125,22 @@ const App = () => {
   const mySetNeutral = () => setNeutral(neutral + 1)
   const mySetBad = () => setBad(bad + 1)
 
-  const sets = [mySetGood, mySetNeutral, mySetBad]
-  const feedbacks = ['good', 'neutral', 'bad']
-  const feedbacksValues = [good, neutral, bad]
-
   const transactions = {
     allFeedbacksSum: (good + neutral + bad),
     average: (good - bad) / (good + neutral + bad),
-    positiveFeedback: (good / (good + neutral + bad)) * 100
+    positiveFeedback: (good / (good + neutral + bad)) * 100,
+    nofeedback: 'no feedback given',
+    sets: [mySetGood, mySetNeutral, mySetBad],
+    feedbacks: ['good', 'neutral', 'bad'],
+    feedbacksValues: [good, neutral, bad]
   }
 
   return (
     <div>
       <Head1 text='give feedback' />
-      <Buttons sets={sets} feedbacks={feedbacks} />
+      <Buttons sets={transactions.sets} feedbacks={transactions.feedbacks} />
       <Head2 text='statistics' />
-      <Statistics feedbacks={feedbacks} feedbacksValues={feedbacksValues} />
-      <SumAvgePfd sum={transactions.allFeedbacksSum} average={transactions.average} positiveFeedback={transactions.positiveFeedback} nofeedback='no feedback given' />
+      <Statistics feedbacks={transactions.feedbacks} feedbacksValues={transactions.feedbacksValues} transactions={transactions} />
     </div>
   )
 }
