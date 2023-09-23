@@ -4,11 +4,43 @@ import { useState } from "react"
 const Head1 = props => <h1>{props.text}</h1>
 const Head2 = props => <h2>{props.text}</h2>
 
+const FeedbackButton = (props) => {
+  return (
+    <>
+      <button onClick={props.handleClick}>{props.text}</button>
+    </>
+  )
+}
+
 // Buttons
-const Button = props => <button onClick={props.handleClick}>{props.text}</button>
+const Buttons = (props) => {
+  return (
+    <>
+      <FeedbackButton handleClick={props.sets[0]} text={props.feedbacks[0]}/>
+      <FeedbackButton handleClick={props.sets[1]} text={props.feedbacks[1]}/>
+      <FeedbackButton handleClick={props.sets[2]} text={props.feedbacks[2]}/>
+    </>
+  )
+}
+
+const StatisticLine = (props) => {
+  return (
+    <div>
+      {props.text} {props.value}
+    </div>
+  )
+}
 
 // Statistics
-const Statistics = props => <div>{props.text} {props.value}</div>
+const Statistics = (props) => {
+  return (
+    <>
+      <StatisticLine text={props.feedbacks[0]} value={props.feedbacksValues[0]} />
+      <StatisticLine text={props.feedbacks[1]} value={props.feedbacksValues[1]} />
+      <StatisticLine text={props.feedbacks[2]} value={props.feedbacksValues[2]} />
+    </>
+  )
+}
 
 // Sum, Average & Positive Feedback
 const SumAvgePfd = (props) => {
@@ -38,19 +70,23 @@ const App = () => {
   const mySetNeutral = () => setNeutral(neutral + 1)
   const mySetBad = () => setBad(bad + 1)
 
-  const allFeedbackSum = (good + neutral + bad)
+  const sets = [mySetGood, mySetNeutral, mySetBad]
+  const feedbacks = ['good', 'neutral', 'bad']
+  const feedbacksValues = [good, neutral, bad]
+
+  const transactions = {
+    allFeedbacksSum: (good + neutral + bad),
+    average: (good - bad) / (good + neutral + bad),
+    positiveFeedback: (good / (good + neutral + bad)) * 100
+  }
 
   return (
     <div>
       <Head1 text='give feedback' />
-      <Button handleClick={mySetGood} text='good' />
-      <Button handleClick={mySetNeutral} text='neutral' />
-      <Button handleClick={mySetBad} text='bad' />
+      <Buttons sets={sets} feedbacks={feedbacks} />
       <Head2 text='statistics' />
-      <Statistics text='good' value={good} />
-      <Statistics text='neutral' value={neutral} />
-      <Statistics text='bad' value={bad} />  
-      <SumAvgePfd sum={allFeedbackSum} average={(good - bad) / allFeedbackSum} positiveFeedback={(good / allFeedbackSum) * 100} nofeedback='no feedback given' />
+      <Statistics feedbacks={feedbacks} feedbacksValues={feedbacksValues} />
+      <SumAvgePfd sum={transactions.allFeedbacksSum} average={transactions.average} positiveFeedback={transactions.positiveFeedback} nofeedback='no feedback given' />
     </div>
   )
 }
