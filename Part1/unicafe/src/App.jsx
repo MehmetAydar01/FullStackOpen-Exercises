@@ -12,13 +12,21 @@ const Statistics = props => <div>{props.text} {props.value}</div>
 
 // Sum, Average & Positive Feedback
 const SumAvgePfd = (props) => {
-  return (
-    <>
-      <div>all {props.sum}</div>
-      <div>average { ( isNaN(props.average) ) ? 0 : props.average }</div>
-      <div>positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %</div>
-    </>
-  )
+  if (props.sum > 0 ) {
+    return (
+      <>
+        <div>all {props.sum}</div>
+        <div>average { ( isNaN(props.average) ) ? 0 : props.average }</div>
+        <div>positive { ( isNaN(props.positiveFeedback) ) ? 0 : props.positiveFeedback } %</div>
+      </>
+    )
+  } else {
+    return (
+      <>
+        <div>{props.nofeedback}</div>
+      </>
+    )
+  }
 }
 
 const App = () => {
@@ -42,7 +50,7 @@ const App = () => {
       <Statistics text='good' value={good} />
       <Statistics text='neutral' value={neutral} />
       <Statistics text='bad' value={bad} />  
-      <SumAvgePfd sum={allFeedbackSum} average={(good - bad) / allFeedbackSum} positiveFeedback={(good / allFeedbackSum) * 100} />
+      <SumAvgePfd sum={allFeedbackSum} average={(good - bad) / allFeedbackSum} positiveFeedback={(good / allFeedbackSum) * 100} nofeedback='no feedback given' />
     </div>
   )
 }
