@@ -13,17 +13,35 @@ const App = () => {
     'The only way to go fast, is to go well.'
   ]
 
-  const [selected, setSelected] = useState(0)
+  const [currentAnecdoteIndex, setCurrentAnecdoteIndex] = useState(0);
+  const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+
+  const handleNextAnecdote = () => {
+    // Rastgele yeni bir anekdot göstermek için
+    const newIndex = Math.floor(Math.random() * anecdotes.length)
+
+    // console.log(newIndex)
+    setCurrentAnecdoteIndex(newIndex)
+  }
+
+  const handleVote = () => {
+    /* Nesneler ve diziler gibi karmaşık veri yapılarında depolanan state'i güncellemenin doğru yolunun, state'in bir kopyasını oluşturmak olduğunu unutmayın */
+
+    const newVotes = [...votes]
+    newVotes[currentAnecdoteIndex] += 1
+
+    // console.log(newVotes)
+    setVotes(newVotes)
+  }
 
   return (
-    <>
-      {/* {console.log(Math.floor(Math.random() * anecdotes.length))} */ console.log(selected)}
-      <div>
-        {anecdotes[selected]}
-      </div>
+    <div>
+      <div>{anecdotes[currentAnecdoteIndex]}</div>
+      <div>has {votes[currentAnecdoteIndex]} votes</div>
       <br />
-      <button onClick={() => setSelected(Math.floor(Math.random() * anecdotes.length))}>Next Anecdote</button>
-    </>
+      <button onClick={handleVote}>Vote</button>
+      <button onClick={handleNextAnecdote}>Next Anectode</button>
+    </div>
   )
 }
 
