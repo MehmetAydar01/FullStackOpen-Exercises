@@ -15,15 +15,19 @@ const App = () => {
 
   const [currentAnecdoteIndex, setCurrentAnecdoteIndex] = useState(0);
   const [votes, setVotes] = useState(new Array(anecdotes.length).fill(0))
+  const [mostVotedIndex, setMostVotedIndex] = useState(0);
 
+
+  // Rastgele Anecdotlari gostermek icin
   const handleNextAnecdote = () => {
     // Rastgele yeni bir anekdot göstermek için
     const newIndex = Math.floor(Math.random() * anecdotes.length)
 
-    // console.log(newIndex)
+    // console.log('newIndex', newIndex)
     setCurrentAnecdoteIndex(newIndex)
   }
 
+  // Oy verme islemi
   const handleVote = () => {
     /* Nesneler ve diziler gibi karmaşık veri yapılarında depolanan state'i güncellemenin doğru yolunun, state'in bir kopyasını oluşturmak olduğunu unutmayın */
 
@@ -32,15 +36,32 @@ const App = () => {
 
     // console.log(newVotes)
     setVotes(newVotes)
+
+    // en cok oyu alan anecdote'u gosterelim
+    let maxVotesIndex = 0
+    for (let i = 1; i < newVotes.length; i++) {
+      if (newVotes[i] > newVotes[maxVotesIndex]) {
+        maxVotesIndex = i
+      }
+    }
+    // console.log('en cok oy alan anekdotun index sayisi', maxVotesIndex)
+    // console.log('en cok oy alan anekdotun oy sayisi', newVotes[maxVotesIndex])
+    setMostVotedIndex(maxVotesIndex)
   }
 
   return (
     <div>
-      <div>{anecdotes[currentAnecdoteIndex]}</div>
-      <div>has {votes[currentAnecdoteIndex]} votes</div>
+      <h2>Anecdote of the day</h2>
+      <p>{anecdotes[currentAnecdoteIndex]}</p>
+      <p>has {votes[currentAnecdoteIndex]} votes</p>
+
       <br />
       <button onClick={handleVote}>Vote</button>
       <button onClick={handleNextAnecdote}>Next Anectode</button>
+
+      <h2>Anecdote with most votes</h2>
+      <p>{anecdotes[mostVotedIndex]}</p>
+      <p>has {votes[mostVotedIndex]} votes</p>
     </div>
   )
 }
