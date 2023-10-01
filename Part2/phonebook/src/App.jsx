@@ -19,9 +19,6 @@ const App = () => {
       name: newName
     }
 
-    // İsmin zaten listede olup olmadığını kontrol et
-    const hasNames = 
-
     setPersons(persons.concat(personObject))
     setNewName('')
   }
