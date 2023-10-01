@@ -19,8 +19,15 @@ const App = () => {
       name: newName
     }
 
-    setPersons(persons.concat(personObject))
-    setNewName('')
+    // İsmin zaten listede olup olmadığını kontrol et
+    const hasNames = persons.some(person => person.name === newName)
+
+    if (!hasNames) {
+      setPersons(persons.concat(personObject))
+      setNewName('')
+    } else {
+      alert(`${newName} is already added to phonebook`)
+    }
   }
 
   return (
@@ -33,6 +40,7 @@ const App = () => {
             type="text"
             value={newName}
             onChange={handleInputChange}
+            placeholder="Name Surname"
           />
         </div>
         <div>
