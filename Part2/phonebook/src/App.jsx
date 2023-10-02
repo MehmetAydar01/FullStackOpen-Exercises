@@ -4,19 +4,18 @@ import { useState } from "react"
 const App = () => {
   const [newName, setNewName] = useState('')
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '0535 485 4565' }
   ])
+  const [newNumber, setNewNumber] = useState('')
 
-  const handleInputChange = (e) => {
-    // console.log(e.target.value)
-    setNewName(e.target.value)
-    // console.log(persons)
-  }
+  const handleInputNameChange = (e) => setNewName(e.target.value)
+  const handleInputNumberChange = (e) => setNewNumber(e.target.value)
 
   const handleFormSubmit = (e) => {
     e.preventDefault()
     const personObject = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
 
     // İsmin zaten listede olup olmadığını kontrol et
@@ -25,6 +24,7 @@ const App = () => {
     if (!hasNames) {
       setPersons(persons.concat(personObject))
       setNewName('')
+      setNewNumber('')
     } else {
       alert(`${newName} is already added to phonebook`)
     }
@@ -39,8 +39,17 @@ const App = () => {
           <input
             type="text"
             value={newName}
-            onChange={handleInputChange}
+            onChange={handleInputNameChange}
             placeholder="Name Surname"
+          />
+        </div>
+        <br />
+        <div> number:
+          <input
+            type="text"
+            value={newNumber}
+            onChange={handleInputNumberChange}
+            placeholder="Your Number"
           />
         </div>
         <div>
@@ -49,7 +58,7 @@ const App = () => {
       </form>
       <h2>Numbers</h2>
       <ul>
-        {persons.map((person) => <li key={person.name}>{person.name}</li>)}
+        {persons.map((person) => <li key={person.name}>{person.name} {person.number}</li>)}
       </ul>
     </div>
   )
