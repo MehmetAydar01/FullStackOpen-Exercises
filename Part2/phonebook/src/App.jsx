@@ -1,6 +1,57 @@
 import { useState } from "react"
 
 
+const Filter = (props) => {
+  const { text, filterValue, handleInputFilterChange } = props
+  return (
+    <div>
+      {text}
+      <input
+        type="text"
+        value={filterValue}
+        onChange={handleInputFilterChange}
+        placeholder="search in phonebook"
+      />
+    </div>
+  )
+}
+
+const PersonForm = (props) => {
+  const { handleFormSubmit, newName, handleInputNameChange, newNumber, handleInputNumberChange } = props
+  return (
+    <form onSubmit={handleFormSubmit}>
+      <div> name:
+        <input
+          type="text"
+          value={newName}
+          onChange={handleInputNameChange}
+          placeholder="Name Surname"
+        />
+      </div>
+      <div> number:
+        <input
+          type="text"
+          value={newNumber}
+          onChange={handleInputNumberChange}
+          placeholder="Your Number"
+        />
+      </div>
+      <div>
+        <button type="submit">Add</button>
+      </div>
+    </form>
+  )
+}
+
+const Persons = ({ filterPhonebook }) => {
+  return (
+    <ul>
+      {filterPhonebook.map((filterPerson) => <li key={filterPerson.id}>{filterPerson.name} {filterPerson.number}</li>)}
+    </ul>
+  )
+}
+
+
 const App = () => {
   const inThePhonebook = [
     { name: 'Arto Hellas', number: '040-123456', id: 1 },
@@ -46,42 +97,28 @@ const App = () => {
   return (
     <div>
       <h1>Exercises 2.6-2.10</h1>
+
       <h2>Phonebook</h2>
-      <div>
-        filter shown with
-        <input
-          type="text"
-          value={filterValue}
-          onChange={handleInputFilterChange}
-          placeholder="search in phonebook"
-        />
-      </div>
-      <h2>add a new</h2>
-      <form onSubmit={handleFormSubmit}>
-        <div> name:
-          <input
-            type="text"
-            value={newName}
-            onChange={handleInputNameChange}
-            placeholder="Name Surname"
-          />
-        </div>
-        <div> number:
-          <input
-            type="text"
-            value={newNumber}
-            onChange={handleInputNumberChange}
-            placeholder="Your Number"
-          />
-        </div>
-        <div>
-          <button type="submit">Add</button>
-        </div>
-      </form>
-      <h2>Numbers</h2>
-      <ul>
-        {filteredPhonebook.map((filterdPerson) => <li key={filterdPerson.id}>{filterdPerson.name} {filterdPerson.number}</li>)}
-      </ul>
+
+      <Filter
+        text='filter shown with'
+        value={filterValue}
+        handleInputFilterChange={handleInputFilterChange}
+      />
+
+      <h3>Add a new</h3>
+
+      <PersonForm
+        handleFormSubmit={handleFormSubmit}
+        newName={newName}
+        handleInputNameChange={handleInputNameChange}
+        newNumber={newNumber}
+        handleInputNumberChange={handleInputNumberChange}
+      />
+
+      <h3>Numbers</h3>
+
+      <Persons filterPhonebook={filteredPhonebook} />
     </div>
   )
 }
