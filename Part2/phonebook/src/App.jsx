@@ -1,5 +1,5 @@
-import { useState } from "react"
-
+import { useState, useEffect } from "react"
+import axios from "axios"
 
 const Filter = (props) => {
   const { text, filterValue, handleInputFilterChange } = props
@@ -53,21 +53,25 @@ const Persons = ({ filterPhonebook }) => {
 
 
 const App = () => {
-  const inThePhonebook = [
-    { name: 'Arto Hellas', number: '040-123456', id: 1 },
-    { name: 'Ada Lovelace', number: '39-44-5323523', id: 2 },
-    { name: 'Dan Abramov', number: '12-43-234345', id: 3 },
-    { name: 'Mary Poppendieck', number: '39-23-6423122', id: 4 }
-  ]
-
   const [newName, setNewName] = useState("")
-  const [persons, setPersons] = useState(inThePhonebook)
+  const [persons, setPersons] = useState([])
   const [newNumber, setNewNumber] = useState("")
   const [filterValue, setFilterValue] = useState("")
 
   const handleInputNameChange = (e) => setNewName(e.target.value)
   const handleInputNumberChange = (e) => setNewNumber(e.target.value)
   const handleInputFilterChange = (e) => setFilterValue(e.target.value)
+
+  useEffect(() => {
+    console.log('effects')
+    axios
+      .get('http://localhost:3001/persons')
+      .then(res => {
+        console.log('promise fulfilled');
+        setPersons(res.data)
+      })
+  }, [])
+  console.log('persons length : ', persons.length)
 
   // Rehber listesini aramaya göre filtrele
   const filteredPhonebook = persons.filter(person => person.name.toLowerCase().includes(filterValue.toLowerCase()))
@@ -96,7 +100,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Exercises 2.6-2.10</h1>
+      <h1>Exercises Phonebook</h1>
 
       <h2>Phonebook</h2>
 
