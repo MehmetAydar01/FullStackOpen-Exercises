@@ -1,47 +1,7 @@
 import { useState, useEffect } from "react"
 import axios from "axios"
-
-const Filter = (props) => {
-  const { text, filterValue, handleInputFilterChange } = props
-  return (
-    <div>
-      {text}
-      <input
-        type="text"
-        value={filterValue}
-        onChange={handleInputFilterChange}
-        placeholder="search in phonebook"
-      />
-    </div>
-  )
-}
-
-const PersonForm = (props) => {
-  const { handleFormSubmit, newName, handleInputNameChange, newNumber, handleInputNumberChange } = props
-  return (
-    <form onSubmit={handleFormSubmit}>
-      <div> name:
-        <input
-          type="text"
-          value={newName}
-          onChange={handleInputNameChange}
-          placeholder="Name Surname"
-        />
-      </div>
-      <div> number:
-        <input
-          type="text"
-          value={newNumber}
-          onChange={handleInputNumberChange}
-          placeholder="Your Number"
-        />
-      </div>
-      <div>
-        <button type="submit">Add</button>
-      </div>
-    </form>
-  )
-}
+import Filter from "./FilterDatas/Filter"
+import PersonForm from "./FormInputs/PersonForm"
 
 const Persons = ({ filterPhonebook }) => {
   return (
