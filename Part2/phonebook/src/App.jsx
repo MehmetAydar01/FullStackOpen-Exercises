@@ -48,8 +48,7 @@ const App = () => {
     const hasNames = persons.some(person => person.name === newName)
 
     if (!hasNames) {
-      axios
-      .post('http://localhost:3001/persons', personObject)
+      axios.post('http://localhost:3001/persons', personObject)
       .then(res => {
         setPersons(persons.concat(res.data))
         setNewName('')
