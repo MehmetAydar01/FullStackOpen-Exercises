@@ -36,8 +36,6 @@ const App = () => {
   // Rehber listesini aramaya göre filtrele
   const filteredPhonebook = persons.filter(person => person.name.toLowerCase().includes(filterValue.toLowerCase()))
 
-  /* Not: Bu javascript methodları filter, some, map değer döndürdükleri için return ile beraber kullanmamız gerekir. Lakin bu method/methodların içindeki callback function işlemi tek satır olursa return yazmamıza gerek kalmıyor. Bu not da burada dursun */
-
   const handleFormSubmit = (e) => {
     e.preventDefault()
     const personObject = {
@@ -50,9 +48,13 @@ const App = () => {
     const hasNames = persons.some(person => person.name === newName)
 
     if (!hasNames) {
-      setPersons(persons.concat(personObject))
-      setNewName('')
-      setNewNumber('')
+      axios
+      .post('http://localhost:3001/persons', personObject)
+      .then(res => {
+        setPersons(persons.concat(res.data))
+        setNewName('')
+        setNewNumber('')
+      })
     } else {
       alert(`${newName} is already added to phonebook`)
     }
