@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react"
-import axios from "axios"
 import Filter from "./FilterDatas/Filter"
 import PersonForm from "./FormInputs/PersonForm"
 import phonebookService from './services/phonebooklists'
@@ -23,15 +22,20 @@ const App = () => {
   const handleInputNumberChange = (e) => setNewNumber(e.target.value)
   const handleInputFilterChange = (e) => setFilterValue(e.target.value)
 
+  // Sunucuda bulunan datalari cekelim ve persons state'ine setleyelim. 
   useEffect(() => {
     console.log('effects')
       phonebookService
         .getAll()
         .then(res => {
-          console.log('promise fulfilled');
-          setPersons(res.data)
+          console.log('promise fulfilled')
+          setPersons(res)
+        })
+        .catch(err => {
+          console.log('data yok ya da gelmedi', err)
         })
   }, [])
+
   console.log('persons length : ', persons.length)
 
   // Rehber listesini aramaya göre filtrele
@@ -47,13 +51,17 @@ const App = () => {
     // İsmin zaten listede olup olmadığını kontrol et
     const hasNames = persons.some(person => person.name === newName)
 
+    // eğer isim listede var ise true, yok ise false döner.
     if (!hasNames) {
       phonebookService
         .create(personObject)
         .then(res => {
-          setPersons(persons.concat(res.data))
+          setPersons(persons.concat(res))
           setNewName('')
           setNewNumber('')
+        })
+        .catch(err => {
+          console.log('data yok ya da gelmedi', err)
         })
     } else {
       alert(`${newName} is already added to phonebook`)
