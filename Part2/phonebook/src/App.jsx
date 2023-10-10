@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import axios from "axios"
 import Filter from "./FilterDatas/Filter"
 import PersonForm from "./FormInputs/PersonForm"
+import phonebookService from './services/phonebooklists'
 
 const Persons = ({ filterPhonebook }) => {
   return (
@@ -24,12 +25,12 @@ const App = () => {
 
   useEffect(() => {
     console.log('effects')
-    axios
-      .get('http://localhost:3001/persons')
-      .then(res => {
-        console.log('promise fulfilled');
-        setPersons(res.data)
-      })
+      phonebookService
+        .getAll()
+        .then(res => {
+          console.log('promise fulfilled');
+          setPersons(res.data)
+        })
   }, [])
   console.log('persons length : ', persons.length)
 
@@ -41,19 +42,19 @@ const App = () => {
     const personObject = {
       name: newName,
       number: newNumber,
-      id: persons.length + 1
     }
 
     // İsmin zaten listede olup olmadığını kontrol et
     const hasNames = persons.some(person => person.name === newName)
 
     if (!hasNames) {
-      axios.post('http://localhost:3001/persons', personObject)
-      .then(res => {
-        setPersons(persons.concat(res.data))
-        setNewName('')
-        setNewNumber('')
-      })
+      phonebookService
+        .create(personObject)
+        .then(res => {
+          setPersons(persons.concat(res.data))
+          setNewName('')
+          setNewNumber('')
+        })
     } else {
       alert(`${newName} is already added to phonebook`)
     }
