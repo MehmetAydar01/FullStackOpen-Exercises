@@ -2,12 +2,17 @@ import { useState, useEffect } from "react"
 import Filter from "./FilterDatas/Filter"
 import PersonForm from "./FormInputs/PersonForm"
 import phonebookService from './services/phonebooklists'
+import axios from "axios"
 
-const Persons = ({ filterPhonebook }) => {
+
+const Persons = ({ filterPhonebook, handleClickDeleteData }) => {
   return (
-    <ul>
-      {filterPhonebook.map((filterPerson) => <li key={filterPerson.id}>{filterPerson.name} {filterPerson.number}</li>)}
-    </ul>
+    <>
+      <li>
+        {filterPhonebook.name} {filterPhonebook.number}
+        <button onClick={handleClickDeleteData}>Delete</button>
+      </li>
+    </>
   )
 }
 
@@ -41,6 +46,25 @@ const App = () => {
   // Rehber listesini aramaya göre filtrele
   const filteredPhonebook = persons.filter(person => person.name.toLowerCase().includes(filterValue.toLowerCase()))
 
+  // Delete islemi ile data/lari silmek icin
+  const handleClickDeleteData = id => {
+    const dataOfDelete = persons.find(person => person.id === id)
+
+    window.confirm(`Delete ${dataOfDelete.name} ?`) ?
+      phonebookService
+        .deleteData(id)
+        .then(response => {
+          // Sildiğimiz (Sunucuda silinen) datayi listelenen kısımdan da kaldıralım.
+          setPersons(prevPhonebookLists => prevPhonebookLists.filter(list => list.id !== id))
+          console.log(response, 'silme islemi basarili');
+        })
+        .catch(err => {
+          console.error('Silme işlemi başarısız oldu: ', err);
+        })
+      : console.log('silme islemini onaylamadiniz')
+  }
+
+  // Form submit oldugunda
   const handleFormSubmit = (e) => {
     e.preventDefault()
     const personObject = {
@@ -61,7 +85,7 @@ const App = () => {
           setNewNumber('')
         })
         .catch(err => {
-          console.log('data yok ya da gelmedi', err)
+          console.log('data eklenmedi', err)
         })
     } else {
       alert(`${newName} is already added to phonebook`)
@@ -92,7 +116,17 @@ const App = () => {
 
       <h3>Numbers</h3>
 
-      <Persons filterPhonebook={filteredPhonebook} />
+      <ul>
+        {filteredPhonebook.map(filterPerson =>
+          <Persons
+            key={filterPerson.id}
+            filterPhonebook={filterPerson}
+            handleClickDeleteData={() => handleClickDeleteData(filterPerson.id)}
+          />
+        )}
+      </ul>
+
+      
     </div>
   )
 }
