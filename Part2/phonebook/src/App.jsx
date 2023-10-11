@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react"
 import Filter from "./FilterDatas/Filter"
 import PersonForm from "./FormInputs/PersonForm"
-import phonebookService from './services/phonebooklists'
+import PhonebookService from './services/phonebooklists'
 import axios from "axios"
 
 
@@ -30,7 +30,7 @@ const App = () => {
   // Sunucuda bulunan datalari cekelim ve persons state'ine setleyelim. 
   useEffect(() => {
     console.log('effects')
-      phonebookService
+      PhonebookService
         .getAll()
         .then(res => {
           console.log('promise fulfilled')
@@ -51,7 +51,7 @@ const App = () => {
     const dataOfDelete = persons.find(person => person.id === id)
 
     window.confirm(`Delete ${dataOfDelete.name} ?`) ?
-      phonebookService
+      PhonebookService
         .deleteData(id)
         .then(response => {
           // Sildiğimiz (Sunucuda silinen) datayi listelenen kısımdan da kaldıralım.
@@ -77,19 +77,48 @@ const App = () => {
 
     // eğer isim listede var ise true, yok ise false döner.
     if (!hasNames) {
-      phonebookService
+      PhonebookService
         .create(personObject)
         .then(res => {
           setPersons(persons.concat(res))
-          setNewName('')
-          setNewNumber('')
         })
         .catch(err => {
           console.log('data eklenmedi', err)
         })
     } else {
-      alert(`${newName} is already added to phonebook`)
+      const findPerson = persons.find(person => person.name === newName)
+  
+      if( window.confirm(`${findPerson.name} is already added to phonebook, replace the old number with a new one ?`) ) {
+        // İsim zaten listede varsa, numarayı güncelle
+        const existingPersonIndex = persons.findIndex(person => person.name === newName)
+
+        if (existingPersonIndex !== -1) {
+          const updatedPersons = [...persons]
+          updatedPersons[existingPersonIndex].number = newNumber
+          personObject.number = updatedPersons[existingPersonIndex].number
+
+          // Sunucumuzda bulunan numara alanini da guncelleyelim
+          PhonebookService
+            .update(updatedPersons[existingPersonIndex].id, personObject)
+            .then(res => {
+              console.log('data guncellendi, guncellenmis hali : ', res)
+            })
+            .catch(err => {
+              console.log('data guncellenmedi' ,err)
+            })
+
+          // Listelenen datalarımızı da güncel haliyle listeleyelim
+          setPersons(updatedPersons)
+        } else {
+          console.log('data index bulunamadi')
+        }
+      } else {
+        console.log('number alanini guncellemediniz..')
+      }
     }
+
+    setNewName('')
+    setNewNumber('')
   }
 
   return (
