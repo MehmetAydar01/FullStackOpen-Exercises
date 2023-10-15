@@ -16,25 +16,15 @@ const Persons = ({ filterPhonebook, handleClickDeleteData }) => {
   )
 }
 
-const Notifications = ({ successMessage }) => {
-  const successStyle = {
-    color: 'green',
-    backgroundColor: '#ccc',
-    border: '3px solid green',
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 20,
-    fontSize: 20
-  }
-
-  if (successMessage === null) {
+const Notifications = ({ message, messageNotifClass }) => {
+  if (message === null) {
     return null
   }
 
   return (
     <>
-      <div style={successStyle}>
-        {successMessage}
+      <div className= { messageNotifClass ? "success" : "error" }>
+        {message}
       </div>
     </>
   )
@@ -46,7 +36,8 @@ const App = () => {
   const [persons, setPersons] = useState([])
   const [newNumber, setNewNumber] = useState("")
   const [filterValue, setFilterValue] = useState("")
-  const [successMessage, setSuccessMessage] = useState('Someone Added, for example: QXyGeN & Roshan...')
+  const [message, setMessage] = useState('Someone Added, for example: QXyGeN & Roshan...')
+  const [messageNotifClass, setMessageNotifClass] = useState(true)
 
   const handleInputNameChange = (e) => setNewName(e.target.value)
   const handleInputNumberChange = (e) => setNewNumber(e.target.value)
@@ -106,10 +97,10 @@ const App = () => {
         .create(personObject)
         .then(res => {
           setPersons(persons.concat(res))
-          setSuccessMessage(`Added ${res.name}`)
+          setMessage(`Added ${res.name}`)
           setTimeout(() => {
-            setSuccessMessage(null)
-            console.log('ekleme islemi basarili olduktan 3 saniye sonra timeout calisti ve successMessage degerini null yaptı ve mesaj gitti');
+            setMessage(null)
+            console.log('ekleme islemi basarili olduktan 3 saniye sonra timeout calisti ve message degerini null yaptı ve mesaj gitti');
           }, 3000)
         })
         .catch(err => {
@@ -132,14 +123,21 @@ const App = () => {
             .update(updatedPersons[existingPersonIndex].id, personObject)
             .then(res => {
               console.log('data guncellendi, guncellenmis hali : ', res)
-              setSuccessMessage(`${res.name}'s number has been changed`)
+
+              setMessage(`${res.name}'s number has been changed`)
               setTimeout(() => {
-                setSuccessMessage(null)
-                console.log('numara degistirme islemi basarili olduktan 3 saniye sonra timeout calisti ve successMessage degerini null yaptı ve mesaj gitti');
+                setMessage(null)
+                console.log('numara degistirme islemi basarili olduktan 3 saniye sonra timeout calisti ve message degerini null yaptı ve mesaj gitti');
               }, 3000)
             })
             .catch(err => {
-              console.log('data guncellenmedi' ,err)
+              setMessageNotifClass(false)
+              
+              setMessage(`information of ${personObject.name} has already been removed from server`)
+              setTimeout(() => {
+                setMessage(null)
+                console.log('sunucuda var olmayan bir datayi guncellemeye calistiniz');
+              }, 3000)
             })
 
           // Listelenen datalarımızı da güncel haliyle listeleyelim
@@ -162,7 +160,7 @@ const App = () => {
 
       <h2>Phonebook</h2>
 
-      <Notifications successMessage={successMessage} />
+      <Notifications message={message} messageNotifClass={messageNotifClass} />
 
       <Filter
         text='filter shown with'
