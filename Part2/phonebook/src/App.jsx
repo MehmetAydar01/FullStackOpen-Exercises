@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import Filter from "./FilterDatas/Filter"
 import PersonForm from "./FormInputs/PersonForm"
 import PhonebookService from './services/phonebooklists'
+import Notifications from "./Notifications/notifications"
 import axios from "axios"
 
 
@@ -12,20 +13,6 @@ const Persons = ({ filterPhonebook, handleClickDeleteData }) => {
         {filterPhonebook.name} {filterPhonebook.number}
         <button onClick={handleClickDeleteData}>Delete</button>
       </li>
-    </>
-  )
-}
-
-const Notifications = ({ message, messageNotifClass }) => {
-  if (message === null) {
-    return null
-  }
-
-  return (
-    <>
-      <div className= { messageNotifClass ? "success" : "error" }>
-        {message}
-      </div>
     </>
   )
 }
@@ -132,7 +119,7 @@ const App = () => {
             })
             .catch(err => {
               setMessageNotifClass(false)
-              
+
               setMessage(`information of ${personObject.name} has already been removed from server`)
               setTimeout(() => {
                 setMessage(null)
