@@ -8,6 +8,7 @@ const App = () => {
   const [countries, setCountries] = useState(null)
   const [filteredCountries, setFilteredCountries] = useState([])
   const [errorMessage, setErrorMessage] = useState('')
+  const [selectedCountry, setSelectedCountry] = useState(null);
 
 
   useEffect(() => {
@@ -56,6 +57,10 @@ const App = () => {
     }
   }
 
+  const handleShowFlag = (countryFlags) => {
+    setSelectedCountry(countryFlags);
+  }
+
 
 
   return (
@@ -64,8 +69,9 @@ const App = () => {
         find countries &#9;
         <CountriesSearch value={value} handleChange={handleChange} />
         <p>{errorMessage}</p>
-        <CountriesContent filteredCountries={filteredCountries} />
+        <CountriesContent filteredCountries={filteredCountries} handleShowFlag={handleShowFlag} selectedCountry={selectedCountry} />
       </div>
+      {(selectedCountry && filteredCountries.length > 1) ? <img src={selectedCountry.flags.png} /> : ''}
     </>
   )
 }
