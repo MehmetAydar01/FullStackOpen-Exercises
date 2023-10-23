@@ -1,10 +1,17 @@
 
-const CountriesContent = ({ filteredCountries }) => {
+const CountriesContent = ({ filteredCountries, handleShowFlag, selectedCountry }) => {
     return (
         <div>
             {
                 (filteredCountries.length > 1 && filteredCountries.length <= 10) ?
-                    filteredCountries.map(item => <p key={item.name.common}>{item.name.common}</p>) :
+                    (   filteredCountries.map(item => {
+                            return (
+                                <div key={item.name.common}>
+                                    <p>{item.name.common} <button onClick={() => handleShowFlag(item)}>show</button></p>
+                                </div>
+                            )
+                        })
+                    ) :
                     filteredCountries.length == 1 ?
                         filteredCountries.map(country => {
                             return (
